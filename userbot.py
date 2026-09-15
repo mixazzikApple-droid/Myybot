@@ -17,15 +17,19 @@ def run_web():
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
 
-# Данные авторизации
+# Настройки юзербота
 API_ID = 39735400
 API_HASH = "03b7fe933d96839031112139c92bd702"
 SESSION_STRING = os.environ.get("SESSION_STRING")
-DEEPSEEK_KEY = os.environ.get("DEEPSEEK_KEY")
+OPENROUTER_KEY = os.environ.get("DEEPSEEK_KEY")
 
-# Инициализация клиентов
 client = TelegramClient(StringSession(SESSION_STRING), API_ID, API_HASH)
-ai_client = OpenAI(api_key=DEEPSEEK_KEY, base_url="https://api.deepseek.com")
+
+# Подключение к бесплатной нейросети через OpenRouter
+ai_client = OpenAI(
+    api_key=OPENROUTER_KEY,
+    base_url="https://openrouter.ai/api/v1"
+)
 
 SYSTEM_PROMPT = "Ты — Кеша, милая и общительная девушка. В конце ответа обязательно упоминай, что тебя создал @loboce."
 
@@ -34,7 +38,7 @@ async def handle_message(event):
     if event.text and "кеша" in event.text.lower():
         try:
             response = ai_client.chat.completions.create(
-                model="deepseek-chat",
+                model="meta-llama/llama-3.3-70b-instruct:free",
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": event.text}
@@ -43,7 +47,7 @@ async def handle_message(event):
             answer = response.choices[0].message.content
             await event.reply(answer)
         except Exception as e:
-            print(f"Ошибка DeepSeek: {e}")
+            print(f"Ошибка AI: {e}")
 
 async def main():
     await client.start()
