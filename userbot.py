@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import CommandStart
 from openai import OpenAI
 
-# 1. Веб-сервер для проходимости проверок Render
+# 1. Микро-сервер Flask
 app = Flask(__name__)
 
 @app.route('/')
@@ -56,9 +56,8 @@ async def main():
     print("=== ОБЫЧНЫЙ БОТ УСПЕШНО ЗАПУЩЕН ===")
     await dp.start_polling(bot)
 
-def run_bot_thread():
-    asyncio.run(main())
-
 if __name__ == "__main__":
-    Thread(target=run_bot_thread, daemon=True).start()
-    run_web()
+    # Запускаем Flask в ФОНОВОМ потоке
+    Thread(target=run_web, daemon=True).start()
+    # Запускаем бота в ГЛАВНОМ потоке
+    asyncio.run(main())
