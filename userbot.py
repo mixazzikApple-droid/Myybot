@@ -39,8 +39,9 @@ async def start_cmd(message: types.Message):
 async def handle_all_messages(message: types.Message):
     if message.text:
         try:
+            # Вызов нейросети с проверенной бесплатной моделью
             response = ai_client.chat.completions.create(
-                model="meta-llama/llama-3.3-70b-instruct:free",
+                model="google/gemini-2.0-flash-lite-preview-02-05:free",
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": message.text}
@@ -49,7 +50,7 @@ async def handle_all_messages(message: types.Message):
             answer = response.choices[0].message.content
             await message.reply(answer)
         except Exception as e:
-            print(f"Ошибка AI: {e}")
+            print(f"ПОДРОБНАЯ ОШИБКА AI: {e}")
             await message.reply("Ой, у меня подпорчилась связь с нейросетью...")
 
 async def main():
@@ -57,7 +58,5 @@ async def main():
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
-    # Запускаем Flask в ФОНОВОМ потоке
     Thread(target=run_web, daemon=True).start()
-    # Запускаем бота в ГЛАВНОМ потоке
     asyncio.run(main())
