@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import CommandStart
 from openai import OpenAI
 
-# 1. Микро-сервер Flask
+# 1. Микро-сервер Flask для прохождения тестов Render
 app = Flask(__name__)
 
 @app.route('/')
@@ -17,8 +17,8 @@ def run_web():
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
 
-# 2. Настройки бота
-BOT_TOKEN = "8967733833:AAG7Cdei6AbjegzeajBP8i-XXWkT2siWwsQ"
+# 2. Настройки бота с новым токеном
+BOT_TOKEN = "8967733833:AAGOleno1nWE-JfAvEjd66GM8Yob9F2Yg70"
 OPENROUTER_KEY = os.environ.get("DEEPSEEK_KEY")
 
 bot = Bot(token=BOT_TOKEN)
@@ -39,7 +39,6 @@ async def start_cmd(message: types.Message):
 async def handle_all_messages(message: types.Message):
     if message.text:
         try:
-            # Вызов нейросети с проверенной бесплатной моделью
             response = ai_client.chat.completions.create(
                 model="google/gemini-2.0-flash-lite-preview-02-05:free",
                 messages=[
